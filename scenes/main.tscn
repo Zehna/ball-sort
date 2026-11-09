@@ -293,6 +293,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
 text = "⟳ Ulang"
 
+[node name="PauseButton" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -76.0
+offset_top = 36.0
+offset_right = -24.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+text = "II"
+
 [node name="HintLabel" type="Label" parent="."]
 anchor_top = 1.0
 anchor_right = 1.0
@@ -352,6 +366,92 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
 text = "Pilih Level"
+
+[node name="PausePanel" type="PanelContainer" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -170.0
+offset_right = 240.0
+offset_bottom = 170.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_WinPanel")
+
+[node name="VBox" type="VBoxContainer" parent="PausePanel"]
+theme_override_constants/separation = 14
+
+[node name="PauseLabel" type="Label" parent="PausePanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "Jeda"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="PausePanel/VBox"]
+theme_override_colors/font_color = Color(0.12, 0.09, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonGold")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonGoldPressed")
+text = "Lanjut"
+
+[node name="PauseRestartButton" type="Button" parent="PausePanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonBlue")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonBlueHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonBluePressed")
+text = "Ulangi"
+
+[node name="PauseMenuButton" type="Button" parent="PausePanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+text = "Menu Utama"
+
+[node name="FailPanel" type="PanelContainer" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -170.0
+offset_right = 240.0
+offset_bottom = 170.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_WinPanel")
+
+[node name="VBox" type="VBoxContainer" parent="FailPanel"]
+theme_override_constants/separation = 14
+
+[node name="FailLabel" type="Label" parent="FailPanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "Waktu Habis!"
+horizontal_alignment = 1
+
+[node name="FailInfoLabel" type="Label" parent="FailPanel/VBox"]
+theme_override_colors/font_color = Color(0.75, 0.8, 0.9, 1)
+theme_override_font_sizes/font_size = 22
+text = ""
+horizontal_alignment = 1
+
+[node name="FailRetryButton" type="Button" parent="FailPanel/VBox"]
+theme_override_colors/font_color = Color(0.12, 0.09, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonGold")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonGoldPressed")
+text = "Coba Lagi"
+
+[node name="FailMenuButton" type="Button" parent="FailPanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+text = "Menu Utama"
 
 [node name="LevelSelectPanel" type="PanelContainer" parent="."]
 visible = false

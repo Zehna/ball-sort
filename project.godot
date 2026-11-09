@@ -4,9 +4,13 @@ config_version=5
 [application]
 config/name="Ball Sort Warna"
 config/description="Game puzzle Ball Sort 2D — tuang bola sampai tiap tabung satu warna. Tap tabung untuk pilih, tap tabung lain untuk tuang. Godot 4.4, portrait HP."
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/loading.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
 
 [display]
 window/size/viewport_width=720

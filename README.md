@@ -53,6 +53,27 @@ membuka layar pilih level.
 - **Getar** (`Input.vibrate_handheld`): 60 ms saat tuang berhasil, 40 ms
   saat langkah gagal, 120 ms saat menang.
 
+## Fase 3 — Loading, menu utama, 4 mode, pause (v1.2.0)
+
+- **Loading** (`scenes/loading.tscn`): splash + progress bar nyata (muat save,
+  preload scene, siapkan suara, ~1,6 detik) + tips bergilir, lalu ke menu utama.
+- **Menu utama** (`scenes/menu.tscn`): tombol MULAI MAIN (lanjut level terakhir),
+  Mode, Harian (dengan streak), Pengaturan, Cara Main; footer progres
+  (level, bintang, skor waktu). Semua tujuan ≤ 2 tap.
+- **4 mode** (`scenes/mode_select.tscn`, `scripts/game_state.gd` autoload):
+  Klasik (30 level, santai), Waktu (90 detik per papan, skor akumulasi antar
+  papan), Sulit (langkah terbatas = langkah minimal + 3, bintang terpisah),
+  Harian (satu puzzle per hari dari seed tanggal, streak tersimpan).
+  Save dipusatkan di `GameState` (`user://ball_sort_save.cfg`) dengan format
+  lama tetap terbaca, jadi progres pemain tidak hilang.
+- **Pause + panel gagal** di dalam game, plus layar Pengaturan (suara, getar,
+  reset progres dengan konfirmasi) dan Cara Main (3 langkah + booster).
+- **Verifikasi headless Godot 4.4:** smoke test alur lengkap 54/54 lolos
+  (loading → menu → mode → pengaturan → cara main → klasik/hard/timed/daily,
+  termasuk menang level 1 optimal 10 langkah, 3 bintang). Satu bug sempat
+  ketemu di tes ini dan sudah diperbaiki: skor mode Waktu sempat ter-reset
+  tiap "Papan Berikutnya" — sekarang skor akumulasi sampai sesi berakhir.
+
 ## Tampilan (UI/UX)
 
 Riset dari screenshot game Ball Sort / Water Sort yang ramai dimainkan +
@@ -99,6 +120,9 @@ Semua level sudah dibuktikan bisa diselesaikan dengan solver BFS
 | `scenes/main.tscn` | Scene utama: judul, HUD, wadah tabung, tombol, panel menang |
 | `scripts/main.gd` | Logika game: level, pilih/tuang, undo, menang/kalah, UI |
 | `scripts/tube.gd` | Satu tabung: gambar tabung + bola, tap, status penuh/seragam |
+| `scripts/game_state.gd` | Autoload: save progres + mode + streak harian + skor waktu |
+| `scripts/loading.gd`, `menu.gd`, `mode_select.gd`, `settings.gd`, `howto.gd` | Layar loading, menu utama, pilih mode, pengaturan, cara main |
+| `scripts/ui_kit.gd` | Helper gaya UI bersama (tombol, label, panel, tabung hias) |
 | `icon.svg` | Ikon project |
 
 ## Lisensi
