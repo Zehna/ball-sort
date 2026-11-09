@@ -10,6 +10,8 @@ const BGM_RATE := 11025
 const BGM_LENGTH := 8.0
 
 var muted: bool = false
+var sfx_volume: float = 1.0
+var bgm_volume: float = 1.0
 var _cache: Dictionary = {}
 var _bgm_player: AudioStreamPlayer = null
 
@@ -24,6 +26,7 @@ func play(sound_name: String) -> void:
 		return
 	var p := AudioStreamPlayer.new()
 	p.stream = stream
+	p.volume_db = linear_to_db(maxf(sfx_volume, 0.001))
 	p.finished.connect(p.queue_free)
 	add_child(p)
 	p.play()
@@ -39,9 +42,16 @@ func play_bgm() -> void:
 		return
 	_bgm_player = AudioStreamPlayer.new()
 	_bgm_player.stream = stream
-	_bgm_player.volume_db = -16.0
+	_bgm_player.volume_db = -16.0 + linear_to_db(maxf(bgm_volume, 0.001))
 	add_child(_bgm_player)
 	_bgm_player.play()
+
+
+## Ubah volume BGM yang sedang diputar (dipakai slider Pengaturan).
+func set_bgm_volume(value: float) -> void:
+	bgm_volume = clampf(value, 0.0, 1.0)
+	if _bgm_player != null:
+		_bgm_player.volume_db = -16.0 + linear_to_db(maxf(bgm_volume, 0.001))
 
 
 func stop_bgm() -> void:

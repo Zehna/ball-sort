@@ -58,8 +58,8 @@ func _draw() -> void:
 	for i in range(_colors.size()):
 		var p := clampf((_t - float(i) * _stagger) / _duration, 0.0, 1.0)
 		var pos := _quad_bezier(_from, mid, _to, p)
-		var color: Color = Tube.COLORS[_colors[i]]
-		Tube.draw_glossy_ball(self, pos, _radius, color)
+		var tex: Texture2D = Tube.BALL_TEXTURES[_colors[i]]
+		draw_texture_rect(tex, Rect2(pos - Vector2(_radius, _radius), Vector2(_radius * 2.0, _radius * 2.0)), false)
 
 
 func _quad_bezier(a: Vector2, c: Vector2, b: Vector2, t: float) -> Vector2:

@@ -32,6 +32,8 @@ func _build_ui() -> void:
 	_music_button.custom_minimum_size = Vector2(0, 88)
 	_music_button.pressed.connect(_on_music_pressed)
 	vbox.add_child(_music_button)
+	vbox.add_child(_volume_row("Volume Suara", GameState.sfx_volume, _on_sfx_volume_changed))
+	vbox.add_child(_volume_row("Volume Musik", GameState.music_volume, _on_music_volume_changed))
 	_vibrate_button = UiKit.button("", 24, UiKit.SLATE)
 	_vibrate_button.custom_minimum_size = Vector2(0, 88)
 	_vibrate_button.pressed.connect(_on_vibrate_pressed)
@@ -43,7 +45,7 @@ func _build_ui() -> void:
 	var fill := Control.new()
 	fill.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(fill)
-	vbox.add_child(UiKit.label("Ball Sort Warna — v1.3.0 (Fase 4)", 18, Color(0.6, 0.65, 0.75, 1)))
+	vbox.add_child(UiKit.label("Ball Sort Warna — v1.4.0 (Fase 5)", 18, Color(0.6, 0.65, 0.75, 1)))
 	var back := UiKit.button("← Kembali", 22, UiKit.SLATE)
 	back.custom_minimum_size = Vector2(0, 80)
 	back.pressed.connect(_on_back_pressed)
@@ -71,6 +73,31 @@ func _build_ui() -> void:
 	var no := UiKit.button("Batal", 22, UiKit.SLATE)
 	no.pressed.connect(_on_reset_cancelled)
 	cvbox.add_child(no)
+
+
+## Baris slider volume (label + HSlider) seperti di board referensi.
+func _volume_row(label_text: String, value: float, handler: Callable) -> VBoxContainer:
+	var row := VBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(UiKit.label(label_text, 22, Color.WHITE, HORIZONTAL_ALIGNMENT_LEFT))
+	var slider := HSlider.new()
+	slider.min_value = 0.0
+	slider.max_value = 100.0
+	slider.step = 1.0
+	slider.value = value * 100.0
+	slider.custom_minimum_size = Vector2(0, 48)
+	slider.value_changed.connect(func(v: float) -> void: handler.call(v))
+	row.add_child(slider)
+	return row
+
+
+func _on_sfx_volume_changed(value: float) -> void:
+	GameState.set_sfx_volume(value / 100.0)
+	_sound.sfx_volume = GameState.sfx_volume
+
+
+func _on_music_volume_changed(value: float) -> void:
+	GameState.set_music_volume(value / 100.0)
 
 
 func _refresh_buttons() -> void:

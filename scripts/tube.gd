@@ -19,15 +19,20 @@ const COLORS: Array[Color] = [
 ]
 
 
-## Bola 3D glossy (dipakai Tube + PourFx): alas gelap, badan,
-## kilau atas-kiri, titik specular, garis tepi gelap.
-static func draw_glossy_ball(ci: CanvasItem, center: Vector2, r: float, color: Color) -> void:
-	ci.draw_circle(center, r, color.darkened(0.4))
-	ci.draw_circle(center + Vector2(0, -r * 0.06), r * 0.9, color)
-	ci.draw_circle(center + Vector2(-r * 0.16, -r * 0.26), r * 0.52, color.lightened(0.28))
-	ci.draw_circle(center + Vector2(-r * 0.3, -r * 0.36), r * 0.26, Color(1, 1, 1, 0.6))
-	ci.draw_circle(center + Vector2(r * 0.3, r * 0.34), r * 0.09, Color(1, 1, 1, 0.35))
-	ci.draw_arc(center, r, 0, TAU, 32, color.darkened(0.5), 2.0)
+## Aset gambar (SVG di res://assets/) — tampilan sama persis dengan board
+## referensi: bola glossy 3D, tabung kaca, panah penunjuk, bintang emas.
+const BALL_TEXTURES: Array[Texture2D] = [
+	preload("res://assets/balls/ball_red.svg"),
+	preload("res://assets/balls/ball_green.svg"),
+	preload("res://assets/balls/ball_blue.svg"),
+	preload("res://assets/balls/ball_yellow.svg"),
+	preload("res://assets/balls/ball_purple.svg"),
+	preload("res://assets/balls/ball_orange.svg"),
+	preload("res://assets/balls/ball_teal.svg"),
+]
+const TUBE_TEXTURE: Texture2D = preload("res://assets/tubes/tube_glass.svg")
+const ARROW_TEXTURE: Texture2D = preload("res://assets/ui/arrow_down.svg")
+const STAR_GOLD: Texture2D = preload("res://assets/ui/star_gold.svg")
 
 var balls: Array[int] = []
 var hidden_top: int = 0
@@ -126,15 +131,6 @@ func is_complete() -> bool:
 	return true
 
 
-func _draw_star(center: Vector2, r: float, color: Color) -> void:
-	var points := PackedVector2Array()
-	for i in range(10):
-		var angle := -PI / 2.0 + float(i) * PI / 5.0
-		var rad := r if i % 2 == 0 else r * 0.45
-		points.append(center + Vector2(cos(angle), sin(angle)) * rad)
-	draw_colored_polygon(points, color)
-
-
 func _draw() -> void:
 	var w := size.x
 	var h := size.y
@@ -144,23 +140,18 @@ func _draw() -> void:
 	draw_set_transform(Vector2(w * 0.5, h - 6), 0, Vector2(1.0, 0.22))
 	draw_circle(Vector2.ZERO, w * 0.36, Color(0, 0, 0, 0.35))
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
-	# Tabung kaca (sudut membulat)
+	# Tabung kaca (tekstur SVG) + border (emas saat terpilih/selesai)
+	draw_texture_rect(TUBE_TEXTURE, Rect2(4, 20, w - 8, h - 24), false)
 	draw_style_box(tube_style, Rect2(4, 20, w - 8, h - 24))
-	# Kilau vertikal di sisi kiri kaca
-	draw_rect(Rect2(12, 32, 7, h - 56), Color(1, 1, 1, 0.20))
-	draw_rect(Rect2(24, 32, 3, h - 56), Color(1, 1, 1, 0.10))
-	# Bibir tabung atas
-	draw_rect(Rect2(2, 16, w - 4, 9), Color(1, 1, 1, 0.30))
 	if selected:
-		# Panah penanda tabung terpilih
-		var cx := w * 0.5
-		draw_colored_polygon(PackedVector2Array([Vector2(cx - 12, 2), Vector2(cx + 12, 2), Vector2(cx, 14)]), Color(1, 0.85, 0.2, 1))
+		# Panah penunjuk emas di atas tabung terpilih (seperti di board)
+		draw_texture_rect(ARROW_TEXTURE, Rect2(w * 0.5 - 14, -10, 28, 38), false)
 	if is_complete() and not balls.is_empty():
 		# Bintang emas di atas tabung yang selesai
-		_draw_star(Vector2(w * 0.5 - 14, 10), 7, Color(1, 0.85, 0.2, 1))
-		_draw_star(Vector2(w * 0.5 + 14, 6), 5, Color(1, 0.9, 0.5, 1))
-	# Bola-bola, dari bawah ke atas (lewati yang sedang diterbangkan)
+		draw_texture_rect(STAR_GOLD, Rect2(w * 0.5 - 30, -2, 18, 18), false)
+		draw_texture_rect(STAR_GOLD, Rect2(w * 0.5 + 12, -6, 14, 14), false)
+	# Bola-bola (tekstur SVG), dari bawah ke atas (lewati yang sedang diterbangkan)
 	for i in range(balls.size() - hidden_top):
 		var center := Vector2(w * 0.5, h - 16.0 - ball_r - float(i) * step)
-		var color: Color = COLORS[balls[i]]
-		draw_glossy_ball(self, center, ball_r, color)
+		var tex: Texture2D = BALL_TEXTURES[balls[i]]
+		draw_texture_rect(tex, Rect2(center - Vector2(ball_r, ball_r), Vector2(ball_r * 2.0, ball_r * 2.0)), false)

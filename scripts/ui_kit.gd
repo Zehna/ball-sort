@@ -12,6 +12,11 @@ const DARK := Color(0.078, 0.09, 0.169, 1)
 const GOLD_TEXT := Color(1, 0.85, 0.2, 1)
 const MUTED_TEXT := Color(0.75, 0.8, 0.9, 1)
 
+## Aset UI (SVG di res://assets/ui/) — bintang + gembok dari board referensi.
+const STAR_GOLD: Texture2D = preload("res://assets/ui/star_gold.svg")
+const STAR_EMPTY: Texture2D = preload("res://assets/ui/star_empty.svg")
+const LOCK: Texture2D = preload("res://assets/ui/lock.svg")
+
 
 static func style(bg: Color, radius: int = 20) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
@@ -101,5 +106,6 @@ static func deco_tubes() -> HBoxContainer:
 static func click_sound(parent: Node) -> SoundSynth:
 	var s := SoundSynth.new()
 	s.muted = GameState.muted
+	s.sfx_volume = GameState.sfx_volume
 	parent.add_child(s)
 	return s

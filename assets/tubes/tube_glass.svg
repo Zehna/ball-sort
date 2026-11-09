@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 360" width="96" height="360">
+  <defs>
+    <linearGradient id="glassBody" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="15%" stop-color="#AEE2FF" stop-opacity="0.12"/>
+      <stop offset="85%" stop-color="#AEE2FF" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="specularGleam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M 16 25 L 16 295 A 32 32 0 0 0 80 295 L 80 25 Z"
+        fill="url(#glassBody)" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.6"/>
+  <path d="M 21 30 L 21 285 A 27 27 0 0 0 37 325 L 37 30 Z"
+        fill="url(#specularGleam)" opacity="0.45"/>
+  <rect x="11" y="18" width="74" height="10" rx="5"
+        fill="rgba(255,255,255,0.4)" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.8"/>
+  <ellipse cx="48" cy="23" rx="34" ry="3.5" fill="#FFFFFF" opacity="0.5"/>
+</svg>

@@ -105,6 +105,42 @@ membuka layar pilih level.
   dimenangkan Diane dalam 11 langkah, 2 bintang — migrasi 4.4→4.7 tidak
   merusak apa pun.
 
+## Fase 5 — Aset gambar persis board + perbaikan force-close (v1.4.0)
+
+- **Analisis video tes HP (2026-11-10 00:20 WIB):** game jalan bagus
+  (loading → menu → pilih level → level 2, bola glossy tampil), lalu
+  **proses berhenti sendiri** ("Debugging process stopped") dan di run
+  kedua tampilannya **berputar 90°** — menu + pilih level tampil miring.
+  Kedua gejala ini ciri konflik orientasi: `window/handheld/orientation=1`
+  meminta aktivitas Android berputar ke portrait sementara jendela editor
+  landscape; perubahan orientasi membuat Android menghancurkan + membuat
+  ulang aktivitas (proses game mati) dan framebuffer tampil terputar.
+  **Perbaikan:** baris `orientation` dihapus dari `project.godot`;
+  portrait tetap dijamin oleh `stretch/aspect="keep"` (kolom portrait
+  dengan letterbox di jendela apa pun) tanpa memaksa orientasi OS.
+  Kalau setelah ini masih force-close, kirim screenshot panel Output
+  (baris ERROR di atas "Debugging process stopped") untuk diagnosis lanjut.
+- **Aset gambar SVG (baru, `res://assets/`):** tampilan sekarang memakai
+  file gambar sesuai board referensi, bukan lagi digambar kode —
+  `assets/balls/ball_*.svg` (7 warna, gradien radial + kilau),
+  `assets/tubes/tube_glass.svg` (kaca + kilau + bibir),
+  `assets/ui/star_gold.svg` + `star_empty.svg`,
+  `assets/ui/arrow_down.svg` (panah penunjuk tabung terpilih),
+  `assets/ui/lock.svg` (gembok level terkunci). Tabung + animasi tuang
+  menggambar tekstur ini (`draw_texture_rect`).
+- **Kartu level ala board:** nomor + 3 bintang tekstur (emas/abu sesuai
+  raihan), level terkunci menampilkan gembok emas.
+- **Panel menang:** 3 bintang tekstur emas/abu (dulu teks ★).
+- **HUD bar emas satu baris (ala board):** bar ber-border emas berisi
+  [Level] [LEVEL 1] [BALL SORT] [Langkah 0] [II]; pesan ("Warna atas
+  tidak cocok!") pindah ke bawah bar.
+- **Slider volume di Pengaturan (ala board):** "Volume Suara" + "Volume
+  Musik" (0–100) di samping toggle Suara/Musik; nilai tersimpan di save
+  (`settings/sfx_volume`, `settings/music_volume`), BGM berubah langsung.
+- **Verifikasi headless Godot 4.4:** smoke test 77/77 lolos (65 lama +
+  12 baru: orientation dihapus, 5 aset SVG, volume default, 2 slider,
+  kartu level bintang + gembok, HUD bar, bintang menang tekstur).
+
 ## Tampilan (UI/UX)
 
 Riset dari screenshot game Ball Sort / Water Sort yang ramai dimainkan +
@@ -147,13 +183,14 @@ Semua level sudah dibuktikan bisa diselesaikan dengan solver BFS
 
 | File | Isi |
 | --- | --- |
-| `project.godot` | Konfigurasi: main scene, viewport portrait 720x1280, aspect keep, orientasi portrait, GL Compatibility |
-| `scenes/main.tscn` | Scene utama: judul, HUD, wadah tabung, tombol, panel menang |
+| `project.godot` | Konfigurasi: main scene, viewport portrait 720x1280, aspect keep, GL Compatibility (tanpa orientation lock — lihat Fase 5) |
+| `assets/balls/`, `assets/tubes/`, `assets/ui/` | Aset SVG: 7 bola glossy, tabung kaca, bintang emas/abu, panah, gembok |
+| `scenes/main.tscn` | Scene utama: judul, HUD bar emas, wadah tabung, tombol, panel menang |
 | `scripts/main.gd` | Logika game: level, pilih/tuang, undo, menang/kalah, UI |
-| `scripts/tube.gd` | Satu tabung: gambar tabung kaca + bola glossy 3D, tap, status penuh/seragam |
+| `scripts/tube.gd` | Satu tabung: gambar tabung kaca + bola (tekstur SVG), tap, status penuh/seragam |
 | `scripts/confetti.gd` | Semburan konfeti saat menang |
-| `scripts/sound.gd` | SFX + BGM loop, semua disintesis prosedural (tanpa file audio) |
-| `scripts/game_state.gd` | Autoload: save progres + mode + streak harian + skor waktu |
+| `scripts/sound.gd` | SFX + BGM loop, semua disintesis prosedural (tanpa file audio); volume SFX/BGM |
+| `scripts/game_state.gd` | Autoload: save progres + mode + streak harian + skor waktu + volume |
 | `scripts/loading.gd`, `menu.gd`, `mode_select.gd`, `settings.gd`, `howto.gd` | Layar loading, menu utama, pilih mode, pengaturan, cara main |
 | `scripts/ui_kit.gd` | Helper gaya UI bersama (tombol, label, panel, tabung hias) |
 | `icon.svg` | Ikon project |

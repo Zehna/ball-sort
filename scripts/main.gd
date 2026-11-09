@@ -88,7 +88,7 @@ var level_buttons: Array = []
 @onready var hint_button: Button = $HintButton
 @onready var restart_button: Button = $RestartButton
 @onready var win_panel: PanelContainer = $WinPanel
-@onready var stars_label: Label = $WinPanel/VBox/StarsLabel
+@onready var star_rects: Array[TextureRect] = [$WinPanel/VBox/StarsRow/Star1, $WinPanel/VBox/StarsRow/Star2, $WinPanel/VBox/StarsRow/Star3]
 @onready var win_label: Label = $WinPanel/VBox/WinLabel
 @onready var win_info_label: Label = $WinPanel/VBox/WinInfoLabel
 @onready var next_button: Button = $WinPanel/VBox/NextButton
@@ -145,6 +145,7 @@ func _load_progress() -> void:
 	saved_hard_stars = GameState.hard_stars.duplicate()
 	saved_hard_best = GameState.hard_best.duplicate()
 	sound.muted = GameState.muted
+	sound.sfx_volume = GameState.sfx_volume
 	_update_sound_button()
 
 
@@ -183,9 +184,10 @@ func _total_hard_stars() -> int:
 	return total
 
 
-# -------------------------------------------------------------- level select
-func _stars_text(n: int) -> String:
-	return "★".repeat(n) + "☆".repeat(3 - n)
+## Bintang panel menang: 3 TextureRect (emas/abu) sesuai board referensi.
+func _set_win_stars(n: int) -> void:
+	for i in range(star_rects.size()):
+		star_rects[i].texture = UiKit.STAR_GOLD if i < n else UiKit.STAR_EMPTY
 
 
 func _level_button_style(bg: Color) -> StyleBoxFlat:
@@ -195,6 +197,8 @@ func _level_button_style(bg: Color) -> StyleBoxFlat:
 	return s
 
 
+## Kartu level ala board: nomor + 3 bintang (tekstur SVG); level
+## terkunci menampilkan gembok emas.
 func _build_level_select() -> void:
 	for child in select_grid.get_children():
 		child.queue_free()
@@ -208,19 +212,41 @@ func _build_level_select() -> void:
 	for i in range(LEVELS.size()):
 		var b := Button.new()
 		b.custom_minimum_size = Vector2(120, 86)
-		b.add_theme_font_size_override("font_size", 22)
 		var is_open := i < unlocked
-		b.text = "%d\n%s" % [i + 1, _stars_text(stars_arr[i]) if is_open else "☆☆☆"]
 		b.disabled = not is_open
 		if is_open:
 			b.add_theme_stylebox_override("normal", open_style)
 			b.add_theme_stylebox_override("hover", open_hover)
 			b.add_theme_stylebox_override("pressed", open_pressed)
-			b.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 		else:
 			b.add_theme_stylebox_override("normal", locked_style)
-			b.add_theme_color_override("font_color", Color(1, 1, 1, 0.35))
 			b.add_theme_color_override("font_disabled_color", Color(1, 1, 1, 0.35))
+		var vbox := VBoxContainer.new()
+		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_theme_constant_override("separation", 2)
+		b.add_child(vbox)
+		var num := UiKit.label(str(i + 1), 22, Color(1, 1, 1, 1) if is_open else Color(1, 1, 1, 0.35))
+		vbox.add_child(num)
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 2)
+		vbox.add_child(row)
+		if is_open:
+			for s in range(3):
+				var star := TextureRect.new()
+				star.texture = UiKit.STAR_GOLD if s < stars_arr[i] else UiKit.STAR_EMPTY
+				star.custom_minimum_size = Vector2(20, 20)
+				star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				row.add_child(star)
+		else:
+			var lock := TextureRect.new()
+			lock.texture = UiKit.LOCK
+			lock.custom_minimum_size = Vector2(24, 24)
+			lock.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			lock.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			row.add_child(lock)
 		b.pressed.connect(_on_level_button_pressed.bind(i))
 		select_grid.add_child(b)
 		level_buttons.append(b)
@@ -635,7 +661,7 @@ func _show_win() -> void:
 		timed_score += 1
 		GameState.record_timed_score(timed_score)
 		var tstars := 3 if moves <= current_board_min else (2 if moves <= current_board_min + 5 else 1)
-		stars_label.text = "★".repeat(tstars) + "☆".repeat(3 - tstars)
+		_set_win_stars(tstars)
 		sound.play("win")
 		GameState.vibrate(120)
 		win_label.text = "Papan Selesai!"
@@ -647,7 +673,7 @@ func _show_win() -> void:
 	if mode == "daily":
 		GameState.record_daily_win()
 		var dstars := 3 if moves <= current_board_min else (2 if moves <= current_board_min + 5 else 1)
-		stars_label.text = "★".repeat(dstars) + "☆".repeat(3 - dstars)
+		_set_win_stars(dstars)
 		sound.play("win")
 		GameState.vibrate(120)
 		win_label.text = "Tantangan Harian Selesai!"
@@ -669,7 +695,7 @@ func _show_win() -> void:
 		if current_level + 1 < LEVELS.size():
 			unlocked = maxi(unlocked, current_level + 2)
 	_save_progress()
-	stars_label.text = "★".repeat(stars) + "☆".repeat(3 - stars)
+	_set_win_stars(stars)
 	sound.play("win")
 	GameState.vibrate(120)
 	if current_level + 1 >= LEVELS.size():

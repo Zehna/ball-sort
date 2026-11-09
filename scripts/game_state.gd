@@ -27,12 +27,15 @@ var timed_best_score: int = 0
 var muted: bool = false
 var vibrate_enabled: bool = true
 var music_enabled: bool = true
+var sfx_volume: float = 1.0
+var music_volume: float = 1.0
 var bgm_synth: SoundSynth = null
 
 
 func _ready() -> void:
 	load_all()
 	bgm_synth = SoundSynth.new()
+	bgm_synth.bgm_volume = music_volume
 	add_child(bgm_synth)
 	if music_enabled:
 		bgm_synth.play_bgm()
@@ -47,6 +50,18 @@ func set_music_enabled(value: bool) -> void:
 		bgm_synth.play_bgm()
 	else:
 		bgm_synth.stop_bgm()
+
+
+func set_music_volume(value: float) -> void:
+	music_volume = clampf(value, 0.0, 1.0)
+	save_all()
+	if bgm_synth != null:
+		bgm_synth.set_bgm_volume(music_volume)
+
+
+func set_sfx_volume(value: float) -> void:
+	sfx_volume = clampf(value, 0.0, 1.0)
+	save_all()
 
 
 func today_string() -> String:
@@ -79,6 +94,8 @@ func load_all() -> void:
 	muted = false
 	vibrate_enabled = true
 	music_enabled = true
+	sfx_volume = 1.0
+	music_volume = 1.0
 	var cfg := ConfigFile.new()
 	if cfg.load(SAVE_PATH) != OK:
 		return
@@ -93,6 +110,8 @@ func load_all() -> void:
 	muted = bool(cfg.get_value("settings", "muted", false))
 	vibrate_enabled = bool(cfg.get_value("settings", "vibrate", true))
 	music_enabled = bool(cfg.get_value("settings", "music", true))
+	sfx_volume = clampf(float(cfg.get_value("settings", "sfx_volume", 1.0)), 0.0, 1.0)
+	music_volume = clampf(float(cfg.get_value("settings", "music_volume", 1.0)), 0.0, 1.0)
 
 
 func _load_int_array(cfg: ConfigFile, section: String, key: String, target: Array[int]) -> void:
@@ -114,6 +133,8 @@ func save_all() -> void:
 	cfg.set_value("settings", "muted", muted)
 	cfg.set_value("settings", "vibrate", vibrate_enabled)
 	cfg.set_value("settings", "music", music_enabled)
+	cfg.set_value("settings", "sfx_volume", sfx_volume)
+	cfg.set_value("settings", "music_volume", music_volume)
 	cfg.save(SAVE_PATH)
 
 

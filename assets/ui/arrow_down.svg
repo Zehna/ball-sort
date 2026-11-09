@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 80" width="60" height="80">
+  <defs>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD34D"/>
+      <stop offset="100%" stop-color="#F39C12"/>
+    </linearGradient>
+  </defs>
+  <polygon points="30,4 54,40 40,40 40,76 20,76 20,40 6,40" fill="url(#arrowGrad)" stroke="#B9770E" stroke-width="2" stroke-linejoin="round"/>
+</svg>
