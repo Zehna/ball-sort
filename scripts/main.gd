@@ -4,20 +4,50 @@ extends Control
 ## Tuang memindahkan seluruh rangkaian bola warna sama di atas
 ## (sebatas ruang kosong di tabung tujuan). Menang kalau tiap tabung
 ## yang terisi penuh dengan satu warna.
-## Fitur: Urung (undo), tambah tabung kosong (maks 2 per level),
-## bintang hasil (1-3) dibanding langkah minimal, animasi pop + goyang.
+## Fase 1: 30 level (semua terverifikasi solver BFS), level select,
+## save progres (ConfigFile user://), hint (solver BFS di runtime),
+## deteksi deadlock (tidak ada langkah valid).
 
 # Level: tiap tabung = Array warna (indeks 0 = paling bawah).
 # Warna: 0 merah, 1 hijau, 2 biru, 3 kuning, 4 ungu.
-# Ketiga level sudah dibuktikan bisa selesai (solver BFS):
-# L1 min 10 langkah, L2 min 13 langkah, L3 min 16 langkah.
+# L1-3 buatan tangan; L4-30 digenerate acak (seed tetap) dan
+# diverifikasi solvable pakai solver BFS dengan aturan tuang yang sama.
 const LEVELS: Array = [
 	[[0, 1, 0, 2], [1, 2, 1, 0], [2, 0, 2, 1], [], []],
 	[[0, 1, 2, 3], [1, 2, 3, 0], [2, 3, 0, 1], [3, 0, 1, 2], [], []],
 	[[0, 1, 2, 3], [1, 2, 3, 4], [2, 3, 4, 0], [3, 4, 0, 1], [4, 0, 1, 2], [], []],
+	[[0, 1, 2, 0], [1, 2, 2, 0], [1, 2, 1, 0], [], []],
+	[[0, 2, 1, 1], [0, 2, 1, 0], [2, 2, 0, 1], [], []],
+	[[2, 0, 2, 1], [2, 1, 2, 1], [0, 0, 0, 1], [], []],
+	[[2, 0, 1, 0], [1, 0, 1, 2], [1, 2, 0, 2], [], []],
+	[[2, 0, 1, 0], [1, 1, 0, 2], [2, 2, 0, 1], [], []],
+	[[1, 0, 2, 0], [0, 1, 0, 2], [1, 2, 2, 1], [], []],
+	[[0, 2, 0, 1], [0, 2, 1, 1], [2, 1, 2, 0], [], []],
+	[[2, 3, 1, 0], [1, 3, 2, 1], [2, 0, 0, 0], [1, 3, 2, 3], [], []],
+	[[3, 1, 1, 0], [0, 2, 0, 3], [2, 1, 1, 2], [3, 3, 0, 2], [], []],
+	[[0, 3, 1, 2], [2, 0, 3, 1], [1, 0, 2, 0], [1, 3, 3, 2], [], []],
+	[[1, 3, 3, 0], [1, 3, 2, 1], [2, 2, 0, 0], [2, 0, 3, 1], [], []],
+	[[3, 2, 2, 0], [3, 1, 0, 1], [3, 0, 3, 0], [1, 2, 2, 1], [], []],
+	[[2, 1, 3, 0], [3, 2, 1, 3], [3, 0, 1, 2], [1, 0, 2, 0], [], []],
+	[[1, 0, 0, 1], [2, 0, 1, 2], [1, 3, 3, 0], [2, 2, 3, 3], [], []],
+	[[3, 3, 2, 0], [1, 1, 2, 2], [0, 1, 1, 3], [2, 0, 3, 0], [], []],
+	[[1, 2, 2, 3], [1, 2, 0, 3], [1, 0, 1, 3], [3, 2, 0, 0], [], []],
+	[[2, 0, 3, 3], [1, 0, 1, 0], [2, 3, 3, 2], [0, 1, 2, 1], [], []],
+	[[1, 1, 2, 4], [3, 3, 0, 4], [4, 3, 0, 3], [0, 1, 0, 1], [4, 2, 2, 2], [], []],
+	[[1, 3, 2, 0], [3, 4, 0, 4], [3, 1, 1, 4], [2, 0, 2, 1], [0, 3, 2, 4], [], []],
+	[[3, 2, 0, 1], [0, 4, 1, 2], [2, 1, 4, 0], [0, 3, 4, 3], [2, 1, 4, 3], [], []],
+	[[0, 2, 1, 0], [4, 4, 1, 2], [4, 3, 1, 3], [3, 1, 0, 2], [0, 2, 4, 3], [], []],
+	[[1, 4, 0, 3], [4, 4, 2, 3], [1, 4, 0, 0], [1, 2, 2, 3], [1, 0, 2, 3], [], []],
+	[[1, 2, 1, 3], [2, 4, 2, 3], [0, 1, 4, 3], [0, 4, 0, 1], [0, 2, 3, 4], [], []],
+	[[0, 2, 4, 4], [1, 2, 1, 4], [1, 2, 3, 3], [1, 0, 0, 3], [4, 0, 3, 2], [], []],
+	[[0, 1, 1, 0], [1, 2, 2, 3], [3, 4, 3, 2], [4, 0, 3, 2], [1, 0, 4, 4], [], []],
+	[[4, 0, 0, 2], [3, 3, 2, 4], [0, 3, 4, 2], [1, 2, 4, 1], [3, 1, 0, 1], [], []],
+	[[1, 0, 2, 1], [0, 2, 0, 4], [4, 4, 0, 3], [4, 2, 3, 1], [3, 2, 3, 1], [], []],
 ]
-const MIN_MOVES: Array[int] = [10, 13, 16]
+const MIN_MOVES: Array[int] = [10, 13, 16, 10, 8, 8, 11, 8, 9, 9, 12, 11, 13, 11, 13, 13, 10, 10, 12, 11, 12, 16, 17, 16, 15, 17, 14, 14, 15, 16]
 const MAX_EXTRA_TUBES: int = 2
+const SAVE_PATH := "user://ball_sort_save.cfg"
+const HINT_STATE_CAP := 80000
 
 var current_level: int = 0
 var tubes: Array = []
@@ -25,42 +55,150 @@ var selected_index: int = -1
 var moves: int = 0
 var undo_stack: Array = []
 var extra_tubes_left: int = MAX_EXTRA_TUBES
+var deadlocked: bool = false
+# Progres tersimpan
+var unlocked: int = 1
+var saved_stars: Array[int] = []
+var saved_best: Array[int] = []
+var level_buttons: Array = []
 
 @onready var tubes_container: Control = $TubesContainer
 @onready var level_label: Label = $LevelPill/LevelLabel
 @onready var moves_label: Label = $MovesPill/MovesLabel
-@onready var dots: Array = [$ProgressDots/Dot1, $ProgressDots/Dot2, $ProgressDots/Dot3]
 @onready var message_label: Label = $MessageLabel
+@onready var level_button: Button = $LevelButton
 @onready var undo_button: Button = $UndoButton
 @onready var add_tube_button: Button = $AddTubeButton
+@onready var hint_button: Button = $HintButton
 @onready var restart_button: Button = $RestartButton
 @onready var win_panel: PanelContainer = $WinPanel
 @onready var stars_label: Label = $WinPanel/VBox/StarsLabel
 @onready var win_label: Label = $WinPanel/VBox/WinLabel
 @onready var win_info_label: Label = $WinPanel/VBox/WinInfoLabel
 @onready var next_button: Button = $WinPanel/VBox/NextButton
+@onready var select_level_button: Button = $WinPanel/VBox/SelectLevelButton
+@onready var level_select_panel: PanelContainer = $LevelSelectPanel
+@onready var select_summary: Label = $LevelSelectPanel/SelectVBox/SelectSummary
+@onready var select_grid: GridContainer = $LevelSelectPanel/SelectVBox/SelectGrid
 
 
 func _ready() -> void:
 	undo_button.pressed.connect(_on_undo_pressed)
 	add_tube_button.pressed.connect(_on_add_tube_pressed)
+	hint_button.pressed.connect(_on_hint_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	next_button.pressed.connect(_on_next_pressed)
-	load_level(0)
+	select_level_button.pressed.connect(_show_level_select)
+	level_button.pressed.connect(_show_level_select)
+	_load_progress()
+	_show_level_select()
 
 
+# ------------------------------------------------------------------ progres
+func _load_progress() -> void:
+	saved_stars.resize(LEVELS.size())
+	saved_stars.fill(0)
+	saved_best.resize(LEVELS.size())
+	saved_best.fill(0)
+	unlocked = 1
+	var cfg := ConfigFile.new()
+	if cfg.load(SAVE_PATH) != OK:
+		return
+	unlocked = clampi(int(cfg.get_value("progress", "unlocked", 1)), 1, LEVELS.size())
+	var s: Array = cfg.get_value("progress", "stars", [])
+	for i in range(mini(s.size(), LEVELS.size())):
+		saved_stars[i] = clampi(int(s[i]), 0, 3)
+	var b: Array = cfg.get_value("progress", "best", [])
+	for i in range(mini(b.size(), LEVELS.size())):
+		saved_best[i] = maxi(0, int(b[i]))
+
+
+func _save_progress() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("progress", "unlocked", unlocked)
+	cfg.set_value("progress", "stars", saved_stars)
+	cfg.set_value("progress", "best", saved_best)
+	cfg.save(SAVE_PATH)
+
+
+func _total_stars() -> int:
+	var total := 0
+	for v in saved_stars:
+		total += v
+	return total
+
+
+# -------------------------------------------------------------- level select
+func _stars_text(n: int) -> String:
+	return "★".repeat(n) + "☆".repeat(3 - n)
+
+
+func _level_button_style(bg: Color) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = bg
+	s.set_corner_radius_all(16)
+	return s
+
+
+func _build_level_select() -> void:
+	for child in select_grid.get_children():
+		child.queue_free()
+	level_buttons.clear()
+	var open_style := _level_button_style(Color(0.2, 0.23, 0.33, 1))
+	var open_hover := _level_button_style(Color(0.27, 0.3, 0.42, 1))
+	var open_pressed := _level_button_style(Color(0.15, 0.17, 0.25, 1))
+	var locked_style := _level_button_style(Color(0.12, 0.13, 0.2, 1))
+	for i in range(LEVELS.size()):
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(120, 86)
+		b.add_theme_font_size_override("font_size", 22)
+		var is_open := i < unlocked
+		b.text = "%d\n%s" % [i + 1, _stars_text(saved_stars[i]) if is_open else "☆☆☆"]
+		b.disabled = not is_open
+		if is_open:
+			b.add_theme_stylebox_override("normal", open_style)
+			b.add_theme_stylebox_override("hover", open_hover)
+			b.add_theme_stylebox_override("pressed", open_pressed)
+			b.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+		else:
+			b.add_theme_stylebox_override("normal", locked_style)
+			b.add_theme_color_override("font_color", Color(1, 1, 1, 0.35))
+			b.add_theme_color_override("font_disabled_color", Color(1, 1, 1, 0.35))
+		b.pressed.connect(_on_level_button_pressed.bind(i))
+		select_grid.add_child(b)
+		level_buttons.append(b)
+	select_summary.text = "Level terbuka: %d/%d  •  Bintang: %d/%d" % [
+		unlocked, LEVELS.size(), _total_stars(), LEVELS.size() * 3]
+
+
+func _show_level_select() -> void:
+	_deselect()
+	win_panel.visible = false
+	_build_level_select()
+	level_select_panel.visible = true
+
+
+func _on_level_button_pressed(index: int) -> void:
+	level_select_panel.visible = false
+	load_level(index)
+
+
+# ------------------------------------------------------------------- gameplay
 func load_level(index: int) -> void:
 	current_level = index
 	undo_stack.clear()
 	selected_index = -1
 	moves = 0
 	extra_tubes_left = MAX_EXTRA_TUBES
+	deadlocked = false
 	win_panel.visible = false
+	message_label.text = ""
 	var def: Array = []
 	for t in LEVELS[current_level]:
 		def.append((t as Array).duplicate())
 	_build_tubes(def)
 	_update_labels()
+	_check_deadlock()
 
 
 func _build_tubes(state: Array) -> void:
@@ -141,6 +279,8 @@ func _try_pour(from_index: int, to_index: int) -> void:
 	_update_labels()
 	if _check_win():
 		_show_win()
+	else:
+		_check_deadlock()
 
 
 func _snapshot() -> Dictionary:
@@ -152,6 +292,7 @@ func _restore(snapshot: Dictionary) -> void:
 	moves = int(snapshot["moves"])
 	_build_tubes(snapshot["balls"])
 	_update_labels()
+	_check_deadlock()
 
 
 func _on_undo_pressed() -> void:
@@ -173,6 +314,7 @@ func _on_add_tube_pressed() -> void:
 	state.append([])
 	_build_tubes(state)
 	_update_labels()
+	_check_deadlock()
 	_show_message("Tabung kosong ditambah!")
 
 
@@ -206,6 +348,12 @@ func _check_win() -> bool:
 func _show_win() -> void:
 	var best: int = MIN_MOVES[current_level]
 	var stars := 3 if moves <= best else (2 if moves <= best + 5 else 1)
+	saved_stars[current_level] = maxi(saved_stars[current_level], stars)
+	if saved_best[current_level] == 0 or moves < saved_best[current_level]:
+		saved_best[current_level] = moves
+	if current_level + 1 < LEVELS.size():
+		unlocked = maxi(unlocked, current_level + 2)
+	_save_progress()
 	stars_label.text = "★".repeat(stars) + "☆".repeat(3 - stars)
 	if current_level + 1 >= LEVELS.size():
 		win_label.text = "Semua Level Selesai!"
@@ -218,6 +366,142 @@ func _show_win() -> void:
 	win_panel.visible = true
 
 
+# ----------------------------------------------------------------------- hint
+func _state_key(balls_state: Array) -> String:
+	var parts: PackedStringArray = []
+	for t in balls_state:
+		var s := ""
+		for v in t:
+			s += str(v)
+		parts.append(s)
+	return ",".join(parts)
+
+
+func _valid_pours(balls_state: Array) -> Array:
+	var out: Array = []
+	for i in range(balls_state.size()):
+		var src: Array = balls_state[i]
+		if src.is_empty():
+			continue
+		var top: int = src[src.size() - 1]
+		var run := 0
+		for k in range(src.size() - 1, -1, -1):
+			if src[k] == top:
+				run += 1
+			else:
+				break
+		for j in range(balls_state.size()):
+			if i == j:
+				continue
+			var dst: Array = balls_state[j]
+			if dst.size() >= Tube.CAPACITY:
+				continue
+			if not dst.is_empty() and dst[dst.size() - 1] != top:
+				continue
+			out.append([i, j, mini(run, Tube.CAPACITY - dst.size())])
+	return out
+
+
+func _apply_pour(balls_state: Array, pour: Array) -> Array:
+	var out: Array = []
+	for t in balls_state:
+		out.append((t as Array).duplicate())
+	var src: Array = out[pour[0]]
+	var dst: Array = out[pour[1]]
+	var top: int = src[src.size() - 1]
+	for k in range(pour[2]):
+		src.pop_back()
+	for k in range(pour[2]):
+		dst.append(top)
+	return out
+
+
+func _is_win_state(balls_state: Array) -> bool:
+	for t in balls_state:
+		if t.is_empty():
+			continue
+		if t.size() != Tube.CAPACITY:
+			return false
+		for v in t:
+			if v != t[0]:
+				return false
+	return true
+
+
+func _solve_first_move(balls_state: Array) -> Array:
+	## BFS dari state sekarang; kembalikan [from, to] langkah pertama
+	## dari solusi optimal, atau [] kalau tidak ada / batas state tercapai.
+	var start_key := _state_key(balls_state)
+	if _is_win_state(balls_state):
+		return []
+	var queue: Array = [balls_state]
+	var head := 0
+	var parent: Dictionary = {start_key: null}
+	var parent_move: Dictionary = {}
+	var visited := 1
+	while head < queue.size():
+		var s: Array = queue[head]
+		head += 1
+		for pour in _valid_pours(s):
+			var ns := _apply_pour(s, pour)
+			var ns_key := _state_key(ns)
+			if parent.has(ns_key):
+				continue
+			parent[ns_key] = _state_key(s)
+			parent_move[ns_key] = [pour[0], pour[1]]
+			visited += 1
+			if visited > HINT_STATE_CAP:
+				return []
+			if _is_win_state(ns):
+				var k := ns_key
+				var first: Array = parent_move[k]
+				while parent[k] != start_key:
+					k = parent[k]
+					first = parent_move[k]
+				return first
+			queue.append(ns)
+	return []
+
+
+func _on_hint_pressed() -> void:
+	if win_panel.visible or level_select_panel.visible:
+		return
+	_show_message("Mencari petunjuk…")
+	var move := _solve_first_move(_current_balls())
+	if move.is_empty():
+		var pours := _valid_pours(_current_balls())
+		if pours.is_empty():
+			message_label.text = "Buntu! Tidak ada langkah valid — urungkan atau ulangi level."
+			deadlocked = true
+		else:
+			_suggest_move(pours[0][0], pours[0][1], true)
+		return
+	_suggest_move(move[0], move[1], false)
+
+
+func _suggest_move(from_i: int, to_i: int, approx: bool) -> void:
+	_deselect()
+	selected_index = from_i
+	tubes[from_i].set_selected(true)
+	var label := "Petunjuk: tuang tabung %d ke tabung %d" % [from_i + 1, to_i + 1]
+	if approx:
+		label += " (langkah valid)"
+	_show_message(label)
+
+
+# ------------------------------------------------------------------- deadlock
+func _check_deadlock() -> void:
+	if _check_win():
+		return
+	if _valid_pours(_current_balls()).is_empty():
+		deadlocked = true
+		message_label.text = "Buntu! Tidak ada langkah valid — urungkan atau ulangi level."
+	elif deadlocked:
+		deadlocked = false
+		message_label.text = ""
+
+
+# --------------------------------------------------------------------- polish
 func _pop(tube) -> void:
 	tube.pivot_offset = tube.size * 0.5
 	var tw := tube.create_tween()
@@ -235,13 +519,6 @@ func _shake(tube) -> void:
 func _update_labels() -> void:
 	level_label.text = "LEVEL %d" % (current_level + 1)
 	moves_label.text = "Langkah %d" % moves
-	for i in range(dots.size()):
-		if i < current_level:
-			dots[i].add_theme_color_override("font_color", Color(0.27, 0.85, 0.45, 1))
-		elif i == current_level:
-			dots[i].add_theme_color_override("font_color", Color(1, 0.85, 0.2, 1))
-		else:
-			dots[i].add_theme_color_override("font_color", Color(1, 1, 1, 0.25))
 	undo_button.text = "↩ Urung (%d)" % undo_stack.size() if not undo_stack.is_empty() else "↩ Urung"
 	add_tube_button.text = "＋ Tabung (%d)" % extra_tubes_left
 	add_tube_button.disabled = extra_tubes_left <= 0

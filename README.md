@@ -16,7 +16,26 @@ Godot 4.4, portrait HP (720x1280), renderer GL Compatibility.
 
 Tombol **↩ Urung** membatalkan satu langkah (angka di tombol = sisa langkah
 yang bisa diurungkan), **＋ Tabung** menambah satu tabung kosong (maks 2 per
-level), **⟳ Ulang** mengulang level.
+level), **Petunjuk** menampilkan langkah optimal berikutnya (dihitung solver
+BFS di runtime), **⟳ Ulang** mengulang level. Tombol **Level** di kiri atas
+membuka layar pilih level.
+
+## Fase 1 — 30 level, hint, save progres
+
+- **30 level** (L1–3 buatan tangan; L4–30 digenerate acak dengan seed tetap
+  dan diverifikasi solvable oleh solver BFS dengan aturan tuang yang sama).
+  Tingkat kesulitan naik: L4–10 = 3 warna, L11–20 = 4 warna, L21–30 =
+  5 warna. Langkah minimal tiap level tercatat untuk penilaian bintang.
+- **Layar pilih level** (grid 5×6): nomor level + bintang yang diraih,
+  level terkunci sampai level sebelumnya selesai.
+- **Save progres** (`user://ball_sort_save.cfg`): level yang terbuka,
+  bintang per level, dan langkah terbaik per level tersimpan otomatis.
+- **Hint**: solver BFS di runtime mencari solusi optimal dari posisi
+  sekarang dan menyorot tabung sumber + menyebut tabung tujuan. Kalau
+  pencarian melewati batas state, hint memakai langkah valid apa pun.
+- **Deteksi deadlock**: kalau tidak ada langkah valid tersisa (dan belum
+  menang), game menampilkan pesan buntu sampai pemain mengurungkan atau
+  mengulang level.
 
 ## Tampilan (UI/UX)
 

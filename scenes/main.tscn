@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1"]
 
@@ -111,6 +111,9 @@ corner_radius_top_right = 28
 corner_radius_bottom_right = 28
 corner_radius_bottom_left = 28
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SelectBg"]
+bg_color = Color(0.05, 0.06, 0.16, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGold"]
 bg_color = Color(0.98, 0.78, 0.15, 1)
 corner_radius_top_left = 20
@@ -153,10 +156,22 @@ theme_override_font_sizes/font_size = 44
 text = "BALL SORT"
 horizontal_alignment = 1
 
-[node name="LevelPill" type="PanelContainer" parent="."]
+[node name="LevelButton" type="Button" parent="."]
 offset_left = 24.0
 offset_top = 116.0
-offset_right = 176.0
+offset_right = 116.0
+offset_bottom = 164.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+text = "Level"
+
+[node name="LevelPill" type="PanelContainer" parent="."]
+offset_left = 132.0
+offset_top = 116.0
+offset_right = 284.0
 offset_bottom = 164.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_Pill")
 
@@ -182,31 +197,6 @@ theme_override_font_sizes/font_size = 22
 text = "Langkah 0"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="ProgressDots" type="HBoxContainer" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -54.0
-offset_top = 122.0
-offset_right = 54.0
-offset_bottom = 158.0
-theme_override_constants/separation = 14
-alignment = 1
-
-[node name="Dot1" type="Label" parent="ProgressDots"]
-theme_override_colors/font_color = Color(1, 1, 1, 0.25)
-theme_override_font_sizes/font_size = 26
-text = "●"
-
-[node name="Dot2" type="Label" parent="ProgressDots"]
-theme_override_colors/font_color = Color(1, 1, 1, 0.25)
-theme_override_font_sizes/font_size = 26
-text = "●"
-
-[node name="Dot3" type="Label" parent="ProgressDots"]
-theme_override_colors/font_color = Color(1, 1, 1, 0.25)
-theme_override_font_sizes/font_size = 26
-text = "●"
 
 [node name="MessageLabel" type="Label" parent="."]
 anchor_right = 1.0
@@ -235,12 +225,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_Platform")
 [node name="UndoButton" type="Button" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
+offset_left = 24.0
 offset_top = -190.0
-offset_right = 240.0
+offset_right = 180.0
 offset_bottom = -110.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonBlue")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonBlueHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonBluePressed")
@@ -249,26 +239,40 @@ text = "↩ Urung"
 [node name="AddTubeButton" type="Button" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 260.0
+offset_left = 196.0
 offset_top = -190.0
-offset_right = 460.0
+offset_right = 352.0
 offset_bottom = -110.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonGreen")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonGreenHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonGreenPressed")
 text = "＋ Tabung (2)"
 
+[node name="HintButton" type="Button" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 368.0
+offset_top = -190.0
+offset_right = 524.0
+offset_bottom = -110.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonBlue")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonBlueHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonBluePressed")
+text = "Petunjuk"
+
 [node name="RestartButton" type="Button" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 480.0
+offset_left = 540.0
 offset_top = -190.0
-offset_right = 680.0
+offset_right = 696.0
 offset_bottom = -110.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
@@ -325,3 +329,50 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonGold")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonGoldPressed")
 text = "Level Berikutnya"
+
+[node name="SelectLevelButton" type="Button" parent="WinPanel/VBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+text = "Pilih Level"
+
+[node name="LevelSelectPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_SelectBg")
+
+[node name="SelectVBox" type="VBoxContainer" parent="LevelSelectPanel"]
+theme_override_constants/separation = 16
+
+[node name="SelectSpacer" type="Control" parent="LevelSelectPanel/SelectVBox"]
+custom_minimum_size = Vector2(0, 40)
+
+[node name="SelectTitle" type="Label" parent="LevelSelectPanel/SelectVBox"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+text = "Pilih Level"
+horizontal_alignment = 1
+
+[node name="SelectSummary" type="Label" parent="LevelSelectPanel/SelectVBox"]
+theme_override_colors/font_color = Color(0.75, 0.8, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = ""
+horizontal_alignment = 1
+
+[node name="SelectGrid" type="GridContainer" parent="LevelSelectPanel/SelectVBox"]
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 5
+alignment = 1
+
+[node name="SelectHint" type="Label" parent="LevelSelectPanel/SelectVBox"]
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 18
+text = "Selesaikan satu level untuk membuka level berikutnya"
+horizontal_alignment = 1
