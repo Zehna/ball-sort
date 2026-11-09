@@ -19,6 +19,7 @@ const COLORS: Array[Color] = [
 ]
 
 var balls: Array[int] = []
+var hidden_top: int = 0
 var selected: bool = false
 var base_x: float = 0.0
 var base_y: float = 0.0
@@ -50,7 +51,15 @@ func set_balls(arr: Array) -> void:
 	balls.clear()
 	for v in arr:
 		balls.append(int(v))
+	hidden_top = 0
 	_refresh_border()
+	queue_redraw()
+
+
+## Sembunyikan N bola teratas saat sedang diterbangkan oleh PourFx.
+## Data balls tidak berubah — hanya gambar yang disembunyikan.
+func set_hidden_top(n: int) -> void:
+	hidden_top = n
 	queue_redraw()
 
 
@@ -130,8 +139,8 @@ func _draw() -> void:
 		# Bintang emas di atas tabung yang selesai
 		_draw_star(Vector2(w * 0.5 - 14, 10), 7, Color(1, 0.85, 0.2, 1))
 		_draw_star(Vector2(w * 0.5 + 14, 6), 5, Color(1, 0.9, 0.5, 1))
-	# Bola-bola, dari bawah ke atas
-	for i in range(balls.size()):
+	# Bola-bola, dari bawah ke atas (lewati yang sedang diterbangkan)
+	for i in range(balls.size() - hidden_top):
 		var center := Vector2(w * 0.5, h - 16.0 - ball_r - float(i) * step)
 		var color: Color = COLORS[balls[i]]
 		draw_circle(center, ball_r, color)

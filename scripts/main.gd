@@ -56,6 +56,7 @@ var moves: int = 0
 var undo_stack: Array = []
 var extra_tubes_left: int = MAX_EXTRA_TUBES
 var deadlocked: bool = false
+var animating: bool = false
 # Progres tersimpan
 var unlocked: int = 1
 var saved_stars: Array[int] = []
@@ -63,6 +64,8 @@ var saved_best: Array[int] = []
 var level_buttons: Array = []
 
 @onready var tubes_container: Control = $TubesContainer
+@onready var pour_fx: PourFx = $PourFx
+@onready var sound: SoundSynth = $SoundSynth
 @onready var level_label: Label = $LevelPill/LevelLabel
 @onready var moves_label: Label = $MovesPill/MovesLabel
 @onready var message_label: Label = $MessageLabel
@@ -80,6 +83,7 @@ var level_buttons: Array = []
 @onready var level_select_panel: PanelContainer = $LevelSelectPanel
 @onready var select_summary: Label = $LevelSelectPanel/SelectVBox/SelectSummary
 @onready var select_grid: GridContainer = $LevelSelectPanel/SelectVBox/SelectGrid
+@onready var sound_button: Button = $LevelSelectPanel/SelectVBox/SoundButton
 
 
 func _ready() -> void:
@@ -90,6 +94,7 @@ func _ready() -> void:
 	next_button.pressed.connect(_on_next_pressed)
 	select_level_button.pressed.connect(_show_level_select)
 	level_button.pressed.connect(_show_level_select)
+	sound_button.pressed.connect(_on_sound_toggled)
 	_load_progress()
 	_show_level_select()
 
@@ -103,6 +108,7 @@ func _load_progress() -> void:
 	unlocked = 1
 	var cfg := ConfigFile.new()
 	if cfg.load(SAVE_PATH) != OK:
+		_update_sound_button()
 		return
 	unlocked = clampi(int(cfg.get_value("progress", "unlocked", 1)), 1, LEVELS.size())
 	var s: Array = cfg.get_value("progress", "stars", [])
@@ -111,6 +117,8 @@ func _load_progress() -> void:
 	var b: Array = cfg.get_value("progress", "best", [])
 	for i in range(mini(b.size(), LEVELS.size())):
 		saved_best[i] = maxi(0, int(b[i]))
+	sound.muted = bool(cfg.get_value("settings", "muted", false))
+	_update_sound_button()
 
 
 func _save_progress() -> void:
@@ -118,7 +126,19 @@ func _save_progress() -> void:
 	cfg.set_value("progress", "unlocked", unlocked)
 	cfg.set_value("progress", "stars", saved_stars)
 	cfg.set_value("progress", "best", saved_best)
+	cfg.set_value("settings", "muted", sound.muted)
 	cfg.save(SAVE_PATH)
+
+
+func _update_sound_button() -> void:
+	sound_button.text = "Suara: Mati" if sound.muted else "Suara: Nyala"
+
+
+func _on_sound_toggled() -> void:
+	sound.muted = not sound.muted
+	_update_sound_button()
+	_save_progress()
+	sound.play("click")
 
 
 func _total_stars() -> int:
@@ -179,6 +199,7 @@ func _show_level_select() -> void:
 
 
 func _on_level_button_pressed(index: int) -> void:
+	sound.play("click")
 	level_select_panel.visible = false
 	load_level(index)
 
@@ -191,6 +212,8 @@ func load_level(index: int) -> void:
 	moves = 0
 	extra_tubes_left = MAX_EXTRA_TUBES
 	deadlocked = false
+	animating = false
+	pour_fx.cancel()
 	win_panel.visible = false
 	message_label.text = ""
 	var def: Array = []
@@ -230,7 +253,7 @@ func _current_balls() -> Array:
 
 
 func _on_tube_tapped(tube) -> void:
-	if win_panel.visible:
+	if win_panel.visible or level_select_panel.visible or animating:
 		return
 	var index := tubes.find(tube)
 	if index == -1:
@@ -240,6 +263,7 @@ func _on_tube_tapped(tube) -> void:
 			return
 		selected_index = index
 		tube.set_selected(true)
+		sound.play("select")
 		return
 	if index == selected_index:
 		tube.set_selected(false)
@@ -248,17 +272,26 @@ func _on_tube_tapped(tube) -> void:
 	_try_pour(selected_index, index)
 
 
+func _tube_mouth(index: int) -> Vector2:
+	var t = tubes[index]
+	return tubes_container.position + t.position + Vector2(t.size.x * 0.5, 20.0)
+
+
 func _try_pour(from_index: int, to_index: int) -> void:
 	var src = tubes[from_index]
 	var dst = tubes[to_index]
 	var from_color: int = src.top_color()
 	if dst.is_full():
 		_show_message("Tabung tujuan sudah penuh!")
+		sound.play("invalid")
+		Input.vibrate_handheld(40)
 		_shake(src)
 		_deselect()
 		return
 	if not dst.is_empty() and dst.top_color() != from_color:
 		_show_message("Warna atas tidak cocok!")
+		sound.play("invalid")
+		Input.vibrate_handheld(40)
 		_shake(src)
 		_deselect()
 		return
@@ -267,15 +300,31 @@ func _try_pour(from_index: int, to_index: int) -> void:
 	var n: int = mini(src.top_run(), space)
 	var moving: Array[int] = []
 	for k in range(n):
-		moving.append(src.balls.pop_back())
-	moving.reverse()
+		moving.append(from_color)
+	# Animasi dulu, commit belakangan: bola sumber disembunyikan
+	# selama diterbangkan PourFx, input diblokir sampai selesai.
+	_deselect()
+	var from_mouth := _tube_mouth(from_index)
+	var to_mouth := _tube_mouth(to_index)
+	var ball_r: float = src.size.x * 0.5 - 8.0
+	animating = true
+	src.set_hidden_top(n)
+	pour_fx.start_pour(from_mouth, to_mouth, moving, ball_r)
+	await pour_fx.finished
+	for k in range(n):
+		src.balls.pop_back()
 	for v in moving:
 		dst.balls.append(v)
+	src.set_hidden_top(0)
 	moves += 1
-	_deselect()
+	animating = false
 	src.queue_redraw()
 	dst.queue_redraw()
 	_pop(dst)
+	sound.play("pour")
+	if dst.is_complete():
+		sound.play("complete")
+	Input.vibrate_handheld(60)
 	_update_labels()
 	if _check_win():
 		_show_win()
@@ -296,15 +345,20 @@ func _restore(snapshot: Dictionary) -> void:
 
 
 func _on_undo_pressed() -> void:
+	if animating:
+		return
 	if undo_stack.is_empty():
 		_show_message("Tidak ada langkah untuk diurungkan.")
 		return
 	_deselect()
 	_restore(undo_stack.pop_back())
+	sound.play("click")
 	_show_message("Langkah diurungkan.")
 
 
 func _on_add_tube_pressed() -> void:
+	if animating:
+		return
 	if extra_tubes_left <= 0:
 		_show_message("Tabung tambahan sudah habis!")
 		return
@@ -315,15 +369,20 @@ func _on_add_tube_pressed() -> void:
 	_build_tubes(state)
 	_update_labels()
 	_check_deadlock()
+	sound.play("click")
 	_show_message("Tabung kosong ditambah!")
 
 
 func _on_restart_pressed() -> void:
+	if animating:
+		return
 	load_level(current_level)
+	sound.play("click")
 	_show_message("Level diulang dari awal.")
 
 
 func _on_next_pressed() -> void:
+	sound.play("click")
 	if current_level + 1 >= LEVELS.size():
 		load_level(0)
 	else:
@@ -355,6 +414,8 @@ func _show_win() -> void:
 		unlocked = maxi(unlocked, current_level + 2)
 	_save_progress()
 	stars_label.text = "★".repeat(stars) + "☆".repeat(3 - stars)
+	sound.play("win")
+	Input.vibrate_handheld(120)
 	if current_level + 1 >= LEVELS.size():
 		win_label.text = "Semua Level Selesai!"
 		win_info_label.text = "Langkah: %d • Minimal: %d" % [moves, best]
@@ -464,8 +525,9 @@ func _solve_first_move(balls_state: Array) -> Array:
 
 
 func _on_hint_pressed() -> void:
-	if win_panel.visible or level_select_panel.visible:
+	if win_panel.visible or level_select_panel.visible or animating:
 		return
+	sound.play("click")
 	_show_message("Mencari petunjuk…")
 	var move := _solve_first_move(_current_balls())
 	if move.is_empty():

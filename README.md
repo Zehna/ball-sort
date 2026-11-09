@@ -37,6 +37,22 @@ membuka layar pilih level.
   menang), game menampilkan pesan buntu sampai pemain mengurungkan atau
   mengulang level.
 
+## Fase 2 — Animasi tuang, suara, getar
+
+- **Animasi tuang beneran**: bola tidak lagi teleport — bola-bola yang
+  dituang terbang dari mulut tabung sumber ke mulut tabung tujuan mengikuti
+  busur parabola, satu per satu dengan jeda kecil (`scripts/pour_fx.gd`).
+  Selama animasi berjalan, input diblokir; state baru di-commit setelah
+  animasi selesai, jadi undo tetap mengembalikan keadaan sebelum tuang.
+- **Suara sintesis prosedural** (`scripts/sound.gd`): semua suara dibuat
+  di kode ke AudioStreamWAV 16-bit (tanpa file audio sama sekali) — pilih
+  tabung, klik tombol, tuang (sapuan nada turun), tabung selesai (dua nada),
+  langkah gagal (bunyi kotak rendah), menang (arpeggio 4 nada).
+- **Tombol mute** di layar pilih level ("Suara: Nyala/Mati"), tersimpan di
+  file save yang sama.
+- **Getar** (`Input.vibrate_handheld`): 60 ms saat tuang berhasil, 40 ms
+  saat langkah gagal, 120 ms saat menang.
+
 ## Tampilan (UI/UX)
 
 Riset dari screenshot game Ball Sort / Water Sort yang ramai dimainkan +
