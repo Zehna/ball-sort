@@ -14,7 +14,30 @@ Godot 4.4, portrait HP (720x1280), renderer GL Compatibility.
      (sebatas ruang kosong di tabung tujuan).
 4. Menang kalau semua tabung yang terisi penuh dengan satu warna.
 
-Tombol **↩ Urung** membatalkan satu langkah, **⟳ Ulang** mengulang level.
+Tombol **↩ Urung** membatalkan satu langkah (angka di tombol = sisa langkah
+yang bisa diurungkan), **＋ Tabung** menambah satu tabung kosong (maks 2 per
+level), **⟳ Ulang** mengulang level.
+
+## Tampilan (UI/UX)
+
+Riset dari screenshot game Ball Sort / Water Sort yang ramai dimainkan +
+praktik HUD game puzzle mobile:
+
+- **Background gradient indigo gelap** (atas terang, bawah gelap) + **rak putih**
+  di bawah tabung — tabung terlihat berdiri di atas rak, seperti game aslinya.
+- **HUD minimal, papan adalah UI-nya:** atas cuma ada pill **LEVEL** (kiri),
+  pill **Langkah** (kanan), dan **3 titik progres level** di tengah
+  (emas = level berjalan, hijau = selesai, redup = belum). Tengah layar suci:
+  tidak ada yang menutupi tabung.
+- **Tabung kaca bersudut membulat**, bola glossy dengan highlight; tabung yang
+  dipilih **naik + border emas + panah kuning**; tabung yang selesai
+  **berkilau emas + bintang**.
+- **Feedback tiap aksi:** tuang berhasil = tabung tujuan "pop" membesar sebentar;
+  tuang gagal = tabung digoyang + pesan kenapa ("Tabung tujuan sudah penuh!" /
+  "Warna atas tidak cocok!").
+- **Panel menang:** bingkai emas, **bintang 1–3** dibanding langkah minimal
+  (3 bintang kalau ≤ minimal, 2 kalau ≤ minimal+5), info langkah, tombol emas
+  "Level Berikutnya".
 
 ## Level
 
