@@ -74,6 +74,37 @@ membuka layar pilih level.
   ketemu di tes ini dan sudah diperbaiki: skor mode Waktu sempat ter-reset
   tiap "Papan Berikutnya" — sekarang skor akumulasi sampai sesi berakhir.
 
+## Fase 4 — Portrait tegak + visual juicy + BGM (v1.3.0)
+
+- **Portrait tegak:** `display/window/stretch/aspect="keep"` (dulu "expand"
+  yang membuat layout portrait 720×1280 melebar di layar landscape) +
+  `display/window/handheld/orientation=1` (portrait) — game selalu tampil
+  tegak, dengan letterbox kalau jendelanya landscape.
+- **Bola 3D glossy** (digambar kode, tanpa file gambar): alas gelap, badan,
+  kilau atas-kiri, titik specular, garis tepi — dipakai tabung (`tube.gd`)
+  dan animasi tuang (`pour_fx.gd`).
+- **Tabung kaca:** badan tembus pandang, kilau vertikal, bibir atas,
+  bayangan di lantai; tabung terpilih tetap naik + panah emas, tabung
+  selesai tetap berkilau + bintang emas.
+- **Tombol pill 3D:** bayangan bawah (timbul), mengecil saat ditekan;
+  palet baru — hijau #2ECC71, biru #3498DB, emas #F39C12, merah #E74C3C
+  (tombol Ulang), latar gradien #14172B → #0B0C16.
+- **Judul kartun:** "BALL SORT" emas dengan outline putih tebal + bayangan
+  (menu, loading, judul game); ikon aplikasi baru `icon.svg` (tabung miring
+  menuang bola glossy) juga tampil di layar loading.
+- **Konfeti menang** (`scripts/confetti.gd`): 90 potongan warna-warni jatuh
+  + berputar tiap kali menang, hilang sendiri.
+- **Audio:** SFX diperkaya (select pop, tuang "plip", selesai 3 nada,
+  menang fanfare 6 nada) + **BGM loop 8 detik prosedural** (pad akor
+  Am7–Fmaj7–Cmaj7–G6 + melodi marimba pentatonik, tanpa file audio) yang
+  jalan terus dari autoload `GameState`, dengan toggle Musik di Pengaturan.
+- **Verifikasi headless Godot 4.4:** smoke test 65/65 lolos (54 lama +
+  11 baru: portrait, palet, tombol 3D, outline judul, BGM loop, toggle
+  musik, konfeti).
+- **Tes di HP (Godot 4.7, 2026-11-09 23:56 WIB):** game jalan, level 1
+  dimenangkan Diane dalam 11 langkah, 2 bintang — migrasi 4.4→4.7 tidak
+  merusak apa pun.
+
 ## Tampilan (UI/UX)
 
 Riset dari screenshot game Ball Sort / Water Sort yang ramai dimainkan +
@@ -116,10 +147,12 @@ Semua level sudah dibuktikan bisa diselesaikan dengan solver BFS
 
 | File | Isi |
 | --- | --- |
-| `project.godot` | Konfigurasi: main scene, viewport portrait 720x1280, GL Compatibility |
+| `project.godot` | Konfigurasi: main scene, viewport portrait 720x1280, aspect keep, orientasi portrait, GL Compatibility |
 | `scenes/main.tscn` | Scene utama: judul, HUD, wadah tabung, tombol, panel menang |
 | `scripts/main.gd` | Logika game: level, pilih/tuang, undo, menang/kalah, UI |
-| `scripts/tube.gd` | Satu tabung: gambar tabung + bola, tap, status penuh/seragam |
+| `scripts/tube.gd` | Satu tabung: gambar tabung kaca + bola glossy 3D, tap, status penuh/seragam |
+| `scripts/confetti.gd` | Semburan konfeti saat menang |
+| `scripts/sound.gd` | SFX + BGM loop, semua disintesis prosedural (tanpa file audio) |
 | `scripts/game_state.gd` | Autoload: save progres + mode + streak harian + skor waktu |
 | `scripts/loading.gd`, `menu.gd`, `mode_select.gd`, `settings.gd`, `howto.gd` | Layar loading, menu utama, pilih mode, pengaturan, cara main |
 | `scripts/ui_kit.gd` | Helper gaya UI bersama (tombol, label, panel, tabung hias) |

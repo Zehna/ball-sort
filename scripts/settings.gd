@@ -4,6 +4,7 @@ extends Control
 
 var _sound: SoundSynth
 var _sound_button: Button
+var _music_button: Button
 var _vibrate_button: Button
 var _confirm_panel: PanelContainer
 
@@ -14,10 +15,6 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.07, 0.08, 0.2, 1)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.offset_left = 48
@@ -25,12 +22,16 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 16)
 	add_child(vbox)
 	vbox.add_child(UiKit.spacer(60))
-	vbox.add_child(UiKit.label("Pengaturan", 44, Color.WHITE))
+	vbox.add_child(UiKit.title_label("Pengaturan", 44, Color(1, 0.8, 0.2, 1)))
 	vbox.add_child(UiKit.spacer(16))
 	_sound_button = UiKit.button("", 24, UiKit.SLATE)
 	_sound_button.custom_minimum_size = Vector2(0, 88)
 	_sound_button.pressed.connect(_on_sound_pressed)
 	vbox.add_child(_sound_button)
+	_music_button = UiKit.button("", 24, UiKit.SLATE)
+	_music_button.custom_minimum_size = Vector2(0, 88)
+	_music_button.pressed.connect(_on_music_pressed)
+	vbox.add_child(_music_button)
 	_vibrate_button = UiKit.button("", 24, UiKit.SLATE)
 	_vibrate_button.custom_minimum_size = Vector2(0, 88)
 	_vibrate_button.pressed.connect(_on_vibrate_pressed)
@@ -42,7 +43,7 @@ func _build_ui() -> void:
 	var fill := Control.new()
 	fill.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(fill)
-	vbox.add_child(UiKit.label("Ball Sort Warna — v1.2.0 (Fase 3)", 18, Color(0.6, 0.65, 0.75, 1)))
+	vbox.add_child(UiKit.label("Ball Sort Warna — v1.3.0 (Fase 4)", 18, Color(0.6, 0.65, 0.75, 1)))
 	var back := UiKit.button("← Kembali", 22, UiKit.SLATE)
 	back.custom_minimum_size = Vector2(0, 80)
 	back.pressed.connect(_on_back_pressed)
@@ -74,6 +75,7 @@ func _build_ui() -> void:
 
 func _refresh_buttons() -> void:
 	_sound_button.text = "Suara: Mati" if GameState.muted else "Suara: Nyala"
+	_music_button.text = "Musik: Mati" if not GameState.music_enabled else "Musik: Nyala"
 	_vibrate_button.text = "Getar: Mati" if not GameState.vibrate_enabled else "Getar: Nyala"
 
 
@@ -81,6 +83,12 @@ func _on_sound_pressed() -> void:
 	GameState.muted = not GameState.muted
 	GameState.save_all()
 	_sound.muted = GameState.muted
+	_refresh_buttons()
+	_sound.play("click")
+
+
+func _on_music_pressed() -> void:
+	GameState.set_music_enabled(not GameState.music_enabled)
 	_refresh_buttons()
 	_sound.play("click")
 

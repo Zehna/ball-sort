@@ -630,6 +630,7 @@ func _check_win() -> bool:
 
 func _show_win() -> void:
 	timer_running = false
+	_burst_confetti()
 	if mode == "timed":
 		timed_score += 1
 		GameState.record_timed_score(timed_score)
@@ -681,6 +682,13 @@ func _show_win() -> void:
 		next_button.text = "Level Berikutnya"
 	select_level_button.text = "Pilih Level"
 	win_panel.visible = true
+
+
+func _burst_confetti() -> void:
+	var c := Confetti.new()
+	c.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(c)
+	c.burst()
 
 
 # ----------------------------------------------------------------------- hint

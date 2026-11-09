@@ -9,14 +9,25 @@ signal tapped(tube: Control)
 
 const CAPACITY: int = 4
 const COLORS: Array[Color] = [
-	Color(1.00, 0.32, 0.32),
-	Color(0.27, 0.85, 0.45),
-	Color(0.30, 0.65, 1.00),
-	Color(1.00, 0.80, 0.20),
-	Color(0.68, 0.45, 0.95),
-	Color(1.00, 0.60, 0.20),
-	Color(0.25, 0.85, 0.90),
+	Color(1.00, 0.23, 0.19), # merah #FF3B30
+	Color(0.20, 0.78, 0.35), # hijau #34C759
+	Color(0.00, 0.48, 1.00), # biru #007AFF
+	Color(1.00, 0.80, 0.00), # kuning #FFCC00
+	Color(0.69, 0.32, 0.87), # ungu #AF52DE
+	Color(1.00, 0.58, 0.00), # oranye #FF9500
+	Color(0.19, 0.84, 0.78), # tosca #30D5C8
 ]
+
+
+## Bola 3D glossy (dipakai Tube + PourFx): alas gelap, badan,
+## kilau atas-kiri, titik specular, garis tepi gelap.
+static func draw_glossy_ball(ci: CanvasItem, center: Vector2, r: float, color: Color) -> void:
+	ci.draw_circle(center, r, color.darkened(0.4))
+	ci.draw_circle(center + Vector2(0, -r * 0.06), r * 0.9, color)
+	ci.draw_circle(center + Vector2(-r * 0.16, -r * 0.26), r * 0.52, color.lightened(0.28))
+	ci.draw_circle(center + Vector2(-r * 0.3, -r * 0.36), r * 0.26, Color(1, 1, 1, 0.6))
+	ci.draw_circle(center + Vector2(r * 0.3, r * 0.34), r * 0.09, Color(1, 1, 1, 0.35))
+	ci.draw_arc(center, r, 0, TAU, 32, color.darkened(0.5), 2.0)
 
 var balls: Array[int] = []
 var hidden_top: int = 0
@@ -32,10 +43,10 @@ func _ready() -> void:
 	base_x = position.x
 	base_y = position.y
 	tube_style = StyleBoxFlat.new()
-	tube_style.bg_color = Color(1, 1, 1, 0.07)
+	tube_style.bg_color = Color(1, 1, 1, 0.05)
 	tube_style.set_corner_radius_all(16)
 	tube_style.set_border_width_all(3)
-	tube_style.border_color = Color(1, 1, 1, 0.5)
+	tube_style.border_color = Color(1, 1, 1, 0.55)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -129,8 +140,17 @@ func _draw() -> void:
 	var h := size.y
 	var ball_r := (w * 0.5) - 8.0
 	var step := ball_r * 2.0 + 6.0
+	# Bayangan tabung di lantai (elips pipih)
+	draw_set_transform(Vector2(w * 0.5, h - 6), 0, Vector2(1.0, 0.22))
+	draw_circle(Vector2.ZERO, w * 0.36, Color(0, 0, 0, 0.35))
+	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 	# Tabung kaca (sudut membulat)
 	draw_style_box(tube_style, Rect2(4, 20, w - 8, h - 24))
+	# Kilau vertikal di sisi kiri kaca
+	draw_rect(Rect2(12, 32, 7, h - 56), Color(1, 1, 1, 0.20))
+	draw_rect(Rect2(24, 32, 3, h - 56), Color(1, 1, 1, 0.10))
+	# Bibir tabung atas
+	draw_rect(Rect2(2, 16, w - 4, 9), Color(1, 1, 1, 0.30))
 	if selected:
 		# Panah penanda tabung terpilih
 		var cx := w * 0.5
@@ -143,6 +163,4 @@ func _draw() -> void:
 	for i in range(balls.size() - hidden_top):
 		var center := Vector2(w * 0.5, h - 16.0 - ball_r - float(i) * step)
 		var color: Color = COLORS[balls[i]]
-		draw_circle(center, ball_r, color)
-		draw_arc(center, ball_r, 0, TAU, 32, color.darkened(0.35), 3.0)
-		draw_circle(center + Vector2(-ball_r * 0.3, -ball_r * 0.3), ball_r * 0.28, Color(1, 1, 1, 0.35))
+		draw_glossy_ball(self, center, ball_r, color)

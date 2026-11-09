@@ -22,20 +22,24 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.07, 0.08, 0.2, 1)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.offset_left = 48
 	vbox.offset_right = -48
 	vbox.add_theme_constant_override("separation", 18)
 	add_child(vbox)
-	vbox.add_child(UiKit.spacer(150))
-	var title := UiKit.label("BALL SORT", 64, Color.WHITE)
+	vbox.add_child(UiKit.spacer(60))
+	var icon := TextureRect.new()
+	icon.texture = load("res://icon.svg")
+	icon.custom_minimum_size = Vector2(128, 128)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	vbox.add_child(icon)
+	vbox.add_child(UiKit.spacer(8))
+	var title := UiKit.title_label("BALL SORT", 64, Color(1, 0.8, 0.2, 1))
 	vbox.add_child(title)
-	var subtitle := UiKit.label("WARNA", 34, UiKit.GOLD_TEXT)
+	var subtitle := UiKit.title_label("WARNA", 34, UiKit.GOLD_TEXT)
 	vbox.add_child(subtitle)
 	vbox.add_child(UiKit.spacer(20))
 	vbox.add_child(UiKit.deco_tubes())

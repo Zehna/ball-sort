@@ -18,10 +18,6 @@ func _mode_card(title: String, desc: String, record: String, bg: Color, font_col
 
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.07, 0.08, 0.2, 1)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.offset_left = 48
@@ -29,7 +25,7 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 16)
 	add_child(vbox)
 	vbox.add_child(UiKit.spacer(60))
-	vbox.add_child(UiKit.label("Pilih Mode", 44, Color.WHITE))
+	vbox.add_child(UiKit.title_label("Pilih Mode", 44, Color(1, 0.8, 0.2, 1)))
 	vbox.add_child(UiKit.label("Empat cara main, satu tujuan: satu warna per tabung", 19, UiKit.MUTED_TEXT))
 	vbox.add_child(UiKit.spacer(16))
 	var classic := _mode_card("KLASIK", "30 level, santai, tanpa batas waktu", "Bintang: %d/90" % GameState.total_stars(), UiKit.GREEN)

@@ -59,9 +59,7 @@ func _draw() -> void:
 		var p := clampf((_t - float(i) * _stagger) / _duration, 0.0, 1.0)
 		var pos := _quad_bezier(_from, mid, _to, p)
 		var color: Color = Tube.COLORS[_colors[i]]
-		draw_circle(pos, _radius, color)
-		draw_arc(pos, _radius, 0, TAU, 32, color.darkened(0.35), 3.0)
-		draw_circle(pos + Vector2(-_radius * 0.3, -_radius * 0.3), _radius * 0.28, Color(1, 1, 1, 0.35))
+		Tube.draw_glossy_ball(self, pos, _radius, color)
 
 
 func _quad_bezier(a: Vector2, c: Vector2, b: Vector2, t: float) -> Vector2:

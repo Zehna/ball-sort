@@ -14,10 +14,6 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.07, 0.08, 0.2, 1)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.offset_left = 48
@@ -25,8 +21,8 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 16)
 	add_child(vbox)
 	vbox.add_child(UiKit.spacer(70))
-	vbox.add_child(UiKit.label("BALL SORT", 56, Color.WHITE))
-	vbox.add_child(UiKit.label("WARNA", 30, UiKit.GOLD_TEXT))
+	vbox.add_child(UiKit.title_label("BALL SORT", 56, Color(1, 0.8, 0.2, 1)))
+	vbox.add_child(UiKit.title_label("WARNA", 30, UiKit.GOLD_TEXT))
 	vbox.add_child(UiKit.label("Tuang bola sampai tiap tabung satu warna", 20, UiKit.MUTED_TEXT))
 	vbox.add_child(UiKit.spacer(10))
 	vbox.add_child(UiKit.deco_tubes())

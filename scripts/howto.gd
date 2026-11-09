@@ -29,10 +29,6 @@ func _step_card(number: String, title: String, desc: String) -> PanelContainer:
 
 
 func _build_ui() -> void:
-	var bg := ColorRect.new()
-	bg.color = Color(0.07, 0.08, 0.2, 1)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
 	vbox.offset_left = 48
@@ -40,7 +36,7 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 16)
 	add_child(vbox)
 	vbox.add_child(UiKit.spacer(60))
-	vbox.add_child(UiKit.label("Cara Main", 44, Color.WHITE))
+	vbox.add_child(UiKit.title_label("Cara Main", 44, Color(1, 0.8, 0.2, 1)))
 	vbox.add_child(UiKit.spacer(8))
 	vbox.add_child(_step_card("1", "Ketuk tabung untuk memilih", "Ketuk tabung yang berisi bola — tabung terpilih naik dan berbingkai emas."))
 	vbox.add_child(_step_card("2", "Ketuk tabung lain untuk menuang", "Bola dituang hanya kalau warna atasnya sama, atau tabung tujuan masih kosong."))

@@ -6,7 +6,7 @@
 
 [sub_resource type="Gradient" id="Gradient_1"]
 offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.1, 0.11, 0.29, 1, 0.04, 0.05, 0.14, 1)
+colors = PackedColorArray(0.078, 0.09, 0.169, 1, 0.043, 0.047, 0.086, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_1"]
 gradient = SubResource("Gradient_1")
@@ -37,42 +37,60 @@ corner_radius_bottom_right = 18
 corner_radius_bottom_left = 18
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonBlue"]
-bg_color = Color(0.23, 0.51, 0.96, 1)
+bg_color = Color(0.2, 0.6, 0.86, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonBlueHover"]
-bg_color = Color(0.3, 0.6, 1, 1)
+bg_color = Color(0.28, 0.68, 0.94, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonBluePressed"]
-bg_color = Color(0.18, 0.4, 0.8, 1)
+bg_color = Color(0.16, 0.48, 0.7, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGreen"]
-bg_color = Color(0.16, 0.65, 0.35, 1)
+bg_color = Color(0.18, 0.8, 0.44, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGreenHover"]
-bg_color = Color(0.22, 0.75, 0.42, 1)
+bg_color = Color(0.24, 0.86, 0.5, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGreenPressed"]
-bg_color = Color(0.12, 0.52, 0.28, 1)
+bg_color = Color(0.14, 0.64, 0.35, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -80,6 +98,9 @@ corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonSlate"]
 bg_color = Color(0.2, 0.23, 0.33, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -87,6 +108,9 @@ corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonSlateHover"]
 bg_color = Color(0.27, 0.3, 0.42, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -94,13 +118,16 @@ corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonSlatePressed"]
 bg_color = Color(0.15, 0.17, 0.25, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_WinPanel"]
-bg_color = Color(0.1, 0.11, 0.26, 1)
+bg_color = Color(0.078, 0.09, 0.169, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -114,17 +141,54 @@ corner_radius_bottom_right = 28
 corner_radius_bottom_left = 28
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SelectBg"]
-bg_color = Color(0.05, 0.06, 0.16, 1)
+bg_color = Color(0.043, 0.047, 0.086, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGold"]
-bg_color = Color(0.98, 0.78, 0.15, 1)
+bg_color = Color(0.95, 0.61, 0.07, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonGoldPressed"]
-bg_color = Color(0.85, 0.65, 0.1, 1)
+bg_color = Color(0.8, 0.5, 0.05, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonRed"]
+bg_color = Color(0.91, 0.29, 0.24, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonRedHover"]
+bg_color = Color(0.95, 0.36, 0.3, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonRedPressed"]
+bg_color = Color(0.75, 0.22, 0.18, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 1
+shadow_offset = Vector2(0, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -153,8 +217,12 @@ anchor_right = 1.0
 offset_top = 36.0
 offset_right = 720.0
 offset_bottom = 100.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
 theme_override_font_sizes/font_size = 44
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 8
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_y = 4
 text = "BALL SORT"
 horizontal_alignment = 1
 
@@ -288,9 +356,9 @@ offset_right = 696.0
 offset_bottom = -110.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonSlate")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonSlateHover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonSlatePressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonRed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonRedHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonRedPressed")
 text = "⟳ Ulang"
 
 [node name="PauseButton" type="Button" parent="."]
@@ -336,7 +404,9 @@ theme_override_constants/separation = 14
 
 [node name="StarsLabel" type="Label" parent="WinPanel/VBox"]
 theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 46
+theme_override_colors/font_outline_color = Color(0.4, 0.25, 0, 1)
+theme_override_constants/outline_size = 4
 text = "★★★"
 horizontal_alignment = 1
 

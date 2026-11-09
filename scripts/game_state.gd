@@ -26,10 +26,27 @@ var timed_best_score: int = 0
 # Pengaturan
 var muted: bool = false
 var vibrate_enabled: bool = true
+var music_enabled: bool = true
+var bgm_synth: SoundSynth = null
 
 
 func _ready() -> void:
 	load_all()
+	bgm_synth = SoundSynth.new()
+	add_child(bgm_synth)
+	if music_enabled:
+		bgm_synth.play_bgm()
+
+
+func set_music_enabled(value: bool) -> void:
+	music_enabled = value
+	save_all()
+	if bgm_synth == null:
+		return
+	if music_enabled:
+		bgm_synth.play_bgm()
+	else:
+		bgm_synth.stop_bgm()
 
 
 func today_string() -> String:
@@ -61,6 +78,7 @@ func load_all() -> void:
 	timed_best_score = 0
 	muted = false
 	vibrate_enabled = true
+	music_enabled = true
 	var cfg := ConfigFile.new()
 	if cfg.load(SAVE_PATH) != OK:
 		return
@@ -74,6 +92,7 @@ func load_all() -> void:
 	timed_best_score = maxi(0, int(cfg.get_value("timed", "best_score", 0)))
 	muted = bool(cfg.get_value("settings", "muted", false))
 	vibrate_enabled = bool(cfg.get_value("settings", "vibrate", true))
+	music_enabled = bool(cfg.get_value("settings", "music", true))
 
 
 func _load_int_array(cfg: ConfigFile, section: String, key: String, target: Array[int]) -> void:
@@ -94,6 +113,7 @@ func save_all() -> void:
 	cfg.set_value("timed", "best_score", timed_best_score)
 	cfg.set_value("settings", "muted", muted)
 	cfg.set_value("settings", "vibrate", vibrate_enabled)
+	cfg.set_value("settings", "music", music_enabled)
 	cfg.save(SAVE_PATH)
 
 
