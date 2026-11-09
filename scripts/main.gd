@@ -564,14 +564,14 @@ func _check_deadlock() -> void:
 
 
 # --------------------------------------------------------------------- polish
-func _pop(tube) -> void:
+func _pop(tube: Tube) -> void:
 	tube.pivot_offset = tube.size * 0.5
 	var tw := tube.create_tween()
 	tw.tween_property(tube, "scale", Vector2(1.07, 1.07), 0.09)
 	tw.tween_property(tube, "scale", Vector2.ONE, 0.12)
 
 
-func _shake(tube) -> void:
+func _shake(tube: Tube) -> void:
 	var tw := tube.create_tween()
 	tw.tween_property(tube, "position:x", tube.base_x + 8.0, 0.05)
 	tw.tween_property(tube, "position:x", tube.base_x - 8.0, 0.05)
